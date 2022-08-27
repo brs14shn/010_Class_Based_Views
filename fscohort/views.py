@@ -3,28 +3,36 @@ from django.http import HttpResponse
 from .forms import StudentForm
 from .models import Student
 # Create your views here.
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView, DetailView
+
+# ?====FUNCTİON BASED==========================
 
 
 def home(request):
     return render(request, "fscohort/home.html")
 
-#! CLASS BASED
+#!======= CLASS BASED=========================
 
 
 class HomeView(TemplateView):
     template_name = "fscohort/home.html"
 
+# ?====FUNCTİON BASED==========================
+
 
 def student_list(request):
-
     students = Student.objects.all()
-
     context = {
         "students": students
     }
-
     return render(request, "fscohort/student_list.html", context)
+
+
+#!======= CLASS BASED=========================
+class StudentListView(ListView):
+    model = Student
+    context_object_name = "students"
+    paginate_by = 1
 
 
 def student_add(request):
@@ -51,6 +59,12 @@ def student_detail(request, id):
     }
 
     return render(request, "fscohort/student_detail.html", context)
+
+
+class StudentDetailView(DetailView):
+    model = Student
+    pk_url_kwarg = 'id'
+    # Default pk olarak url kısmında belirtirsek burada belirtmeye gerek yok
 
 
 def student_update(request, id):
